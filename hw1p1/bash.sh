@@ -1,8 +1,8 @@
 #!/bin/bash
 clear
-inPID=$1
+parProsess=$1
 
-if [ -z "$inPID" ]; then
+if [ -z "$parProsess" ]; then
 
     unset appsNames
     appsNames=$(sudo netstat -tunapl | awk '{print $7}' | grep -oP '/\K.*' | sort | uniq)
@@ -16,23 +16,47 @@ if [ -z "$inPID" ]; then
 
 else
     {
-        unset appsPids
-        appsPids=$(sudo netstat -tunapl | awk '{print $7}' | awk -F '/' '{print $1}' | sed s/[^0-9]//g | sort | uniq)
+        if [[ "$parProsess" =~ ^[0-9]+$ ]]; then
+            {
+                unset appsPids
+                appsPids=$(sudo netstat -tunapl | awk '{print $7}' | awk -F '/' '{print $1}' | sed s/[^0-9]//g | sort | uniq)
 
-        for pidN in $appsPids; do
-            if [ "$pidN" == "$inPID" ]; then
-                app=$inPID
-                break
-            fi
-        done
-        if [ -z "$app" ]; then
-            echo "PID dose not exist"
-            exit
+                for pid in $appsPids; do
+                    if [ "$pid" == "$parProsess" ]; then
+                        app=$parProsess
+                        break
+                    fi
+                done
+
+                if [ -z "$app" ]; then
+                    echo "There is no process with PID: $parProsess"
+                    exit
+                fi
+            }
+        else
+            {
+                unset appsNames
+                appsNames=$(sudo netstat -tunapl | awk '{print $7}' | grep -oP '/\K.*' | sort | uniq)
+
+                for appN in $appsNames; do
+                    if [ "$appN" == "$parProsess" ]; then
+                        app=$parProsess
+                        break
+                    fi
+                done
+
+                if [ -z "$app" ]; then
+                    echo "There are no processes with this Name: $parProsess"
+                    exit
+                fi
+
+            }
         fi
+
     }
 fi
 
-echo "$app"
+echo "Prosess: $app"
 if [ "$app" ]; then
     sudo netstat -tunapl | awk '/'$app'/ {print $5}' | cut -d: -f1 | sort | uniq -c | sort | tail -n5 | grep -oP '(\d+\.){3}\d+' | while read IP; do whois $IP | awk -F':' '/^Organization/ {print $2}'; done
 fi
