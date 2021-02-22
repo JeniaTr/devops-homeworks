@@ -2,6 +2,7 @@
 clear
 parProsess=$1
 parWhoisN=$2
+tailN=$3
 
 parrWhois=([1]='Organization' [2]='City' [3]='Country')
 
@@ -42,6 +43,10 @@ if [ -z "$parProsess" ]; then
                 ;;
             esac
         done
+
+        echo "Enter max number of ip adresses:"
+        read -r tailN
+
     }
 else
     {
@@ -78,17 +83,28 @@ else
                     echo "There are no processes with this Name: $parProsess"
                     exit
                 fi
-
             }
         fi
+    }
+fi
 
+if ! [[ "$tailN" =~ ^[0-9]+$ ]]; then
+    {
+        tailN="10"
     }
 fi
 
 echo "Prosess: $app"
-if [ "$app" ]; then
+if [[ "$app" && "$parWhoisN" && "$tailN" ]]; then
 
-    sudo netstat -tunapl | awk '/'$app'/ {print $5}' | cut -d: -f1 | sort | uniq -c | sort | tail -n5 | grep -oP '(\d+\.){3}\d+' | while read IP; do whois $IP | awk -F':' '/^'${parrWhois[parWhoisN]}'/ {print $2}'; done | sort | uniq -c
+    sudo netstat -tunapl |
+        awk '/'"$app"'/ {print $5}' |
+        cut -d: -f1 | sort |
+        uniq -c | sort |
+        tail -n"$tailN" |
+        grep -oP '(\d+\.){3}\d+' |
+        while read -r IP; do whois "$IP" |
+            awk -F':' '/^'"${parrWhois[parWhoisN]}"'/ {print $2}'; done |
+        sort | uniq -c
+
 fi
-
-# sed '/^#/d' | awk -F':' '/^/ {print $1}';
