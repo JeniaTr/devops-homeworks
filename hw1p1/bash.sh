@@ -11,17 +11,17 @@ if [ -z "$parProsess" ]; then
         echo -e "\n Script will display only user processes \n"
 
         unset appsNames
+
+        #Scan available process Names
         appsNames=$(netstat -tunapl | awk '{print $7}' | grep -oP '/\K.*' | sort | uniq)
 
         echo -e "\nWhich app to scan:"
-
         select appName in $appsNames; do
             app=$appName
             break
         done
 
         echo -e "\n What fields you want to look:"
-
         select parr in "${parrWhois[@]}"; do
             case $parr in
             "Organization")
@@ -48,13 +48,14 @@ if [ -z "$parProsess" ]; then
 
         echo -e "\nEnter max number of ip adresses:"
         read -r tailN
-
     }
 else
     {
         if [[ "$parProsess" =~ ^[0-9]+$ ]]; then
             {
                 unset appsPids
+
+                # Scan available process PIDs
                 appsPids=$(netstat -tunapl | awk '{print $7}' | awk -F '/' '{print $1}' | sed s/[^0-9]//g | sort | uniq)
 
                 for pid in $appsPids; do
@@ -72,6 +73,8 @@ else
         else
             {
                 unset appsNames
+
+                #Scan available process Names
                 appsNames=$(netstat -tunapl | awk '{print $7}' | grep -oP '/\K.*' | sort | uniq)
 
                 for appN in $appsNames; do
@@ -90,6 +93,7 @@ else
     }
 fi
 
+#If not only a number
 if ! [[ "$tailN" =~ ^[0-9]+$ ]]; then
     {
         tailN=100
