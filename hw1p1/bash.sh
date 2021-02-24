@@ -8,17 +8,19 @@ parrWhois=([1]='Organization' [2]='City' [3]='Country')
 
 if [ -z "$parProsess" ]; then
     {
-        unset appsNames
-        appsNames=$(sudo netstat -tunapl | awk '{print $7}' | grep -oP '/\K.*' | sort | uniq)
+        echo -e "\n Script will display only user processes \n"
 
-        echo "Which app to scan:"
+        unset appsNames
+        appsNames=$(netstat -tunapl | awk '{print $7}' | grep -oP '/\K.*' | sort | uniq)
+
+        echo -e "\nWhich app to scan:"
 
         select appName in $appsNames; do
             app=$appName
             break
         done
 
-        echo "What fields you want to look:"
+        echo -e "\n What fields you want to look:"
 
         select parr in "${parrWhois[@]}"; do
             case $parr in
@@ -39,12 +41,12 @@ if [ -z "$parProsess" ]; then
 
             *)
                 echo "Invalid entry."
-                break
+                exit
                 ;;
             esac
         done
 
-        echo "Enter max number of ip adresses:"
+        echo -e "\nEnter max number of ip adresses:"
         read -r tailN
 
     }
@@ -53,7 +55,7 @@ else
         if [[ "$parProsess" =~ ^[0-9]+$ ]]; then
             {
                 unset appsPids
-                appsPids=$(sudo netstat -tunapl | awk '{print $7}' | awk -F '/' '{print $1}' | sed s/[^0-9]//g | sort | uniq)
+                appsPids=$(netstat -tunapl | awk '{print $7}' | awk -F '/' '{print $1}' | sed s/[^0-9]//g | sort | uniq)
 
                 for pid in $appsPids; do
                     if [ "$pid" == "$parProsess" ]; then
@@ -70,7 +72,7 @@ else
         else
             {
                 unset appsNames
-                appsNames=$(sudo netstat -tunapl | awk '{print $7}' | grep -oP '/\K.*' | sort | uniq)
+                appsNames=$(netstat -tunapl | awk '{print $7}' | grep -oP '/\K.*' | sort | uniq)
 
                 for appN in $appsNames; do
                     if [ "$appN" == "$parProsess" ]; then
@@ -90,14 +92,24 @@ fi
 
 if ! [[ "$tailN" =~ ^[0-9]+$ ]]; then
     {
-        tailN="10"
+        tailN=100
+        echo -e "\nYou entered invalid number of ip-s to scan it veal be default -- $tailN \n"
+    }
+else
+    {
+        if [[ "$tailN" -gt 100 ]]; then
+            {
+                tailN=100
+                echo -e "\nMaximum is 100 ip-s to scan. You entered bigger number. It will be maximum default -- $tailN \n"
+            }
+        fi
     }
 fi
 
-echo "Prosess: $app"
+echo -e "Prosess: $app \n"
 if [[ "$app" && "$parWhoisN" && "$tailN" ]]; then
 
-    sudo netstat -tunapl |
+    netstat -tunapl |
         awk '/'"$app"'/ {print $5}' |
         cut -d: -f1 | sort |
         uniq -c | sort |
