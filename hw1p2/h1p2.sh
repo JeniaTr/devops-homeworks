@@ -1,69 +1,179 @@
 #!/bin/bash
-clear
-# This line prints the average rate for the last 14 values from the file.
-#Changes are considered only relative to the Integer part.
-#---- All values after - "." do not go to the amount !!!
-#---- "|tr '.' ','|" to get a beter result
-#jq -r '.prices[][]' quotes.json | grep -oP '\d+\.\d+' | tail -n 14 | awk -v mean=0 '{mean+=$1} END {print mean/14}'
-
 #########################################################################
-#declare -A curse
-# sed 's/0*$//' - cut all "0" in the end of variables
 #
-readarray -t curse < <(jq -r '.prices[][]' quotes.json | sed 's/0*$//' | tr '.' ',')
+#
+# rm quotes.json
+# curl -s https://yandex.ru/news/quotes/graph_2000.json > ./quotes.json
+#
+#
+clear
+
+readarray -t curse < <(jq -r '.prices[][]' quotes.json)
+# readarray -t curse < <(jq -r '.prices[][]' quotes.json| tr '.' ',')
 
 echo ${#curse[@]}
 
 for ((i = 1; i <= ${#curse[@]}; i = i + 2)); do
-    curseDate[i - 1]=$(date -d @"${curse[i - 1]}" +%Y-%m-%d)
+    #DATA
+    # curseDate[i - 1]=$(date -d @"$(echo "${curse[i - 1]}" | rev | cut -c 4- | rev) " +%Y-%m-%d)
+    # OR
+    tempData=$(echo "${curse[i - 1]}" | rev | cut -c 4- | rev)
+    curseDate[i - 1]=$(date -d @"$tempData" +%Y-%m-%d)
+    ####
+
+    #VALUE
     curseValue[i - 1]=${curse[i]}
 done
-unset curse
-yearFrom=$(date -d 2016-01-01 +%Y-%m-%d)
-month="03"
-echo "==========="
-echo "Date from: $yearFrom"
-echo "Month for: $month"
-echo "==========="
-# month=$(date -d "$yearFrom" '+%m')
-b=0
-for ((i = 0; i <= ${#curseDate[@]}; i++)); do
-    if [[ ${curseDate[i]} > $yearFrom ]]; then
-        {
-            curseYear=$(date -d "${curseDate[i]}" '+%y')
-            curseMonth=$(date -d "${curseDate[i]}" '+%m')
-            if [[ $curseMonth == $month ]]; then
-                {
-                    # echo $curseMonth
-                    # echo $month
-                    # echo ${curseDate[i]}
 
-                    ((b++))
+# #---------Test Data Convert---------------
+# echo ${#curseDate[@]}
+# echo ${#curseValue[@]}
+
+# # echo "${curseDate[@]}"
+
+# unset i
+
+# for i in "${!curseDate[@]}"; do
+#     if [[ "$(date -d "${curseDate[i]}" +%Y-%m)" == "2016-03" ]]; then
+#         echo "${curseDate[i]}"
+#         echo "${curseValue[i]}"
+#     fi
+# done
+# exit
+# #---------/Test Data Convert---------------
+
+unset curse
+startYear=$(date -d 2005-01-01 +%Y-%m-%d)
+checkMonth="03"
+
+echo "==========="
+echo "Date from: $startYear"
+echo "Month for: $checkMonth"
+echo "==========="
+
+declare -A max
+declare -A min
+
+for i in "${!curseDate[@]}"; do
+    if [[ "$startYear" < "${curseDate[i]}" ]]; then
+        {
+            itMonth=$(date -d "${curseDate[i]}" '+%m')
+
+            if [[ "$itMonth" == "$checkMonth" ]]; then
+                {
+                    itYear="$(date -d "${curseDate[i]}" '+%Y')"
+
+                    if ! [ ${min[$itYear]+_} ]; then
+                        {
+                            min[$itYear]=${curseValue[i]}
+                            max[$itYear]=${curseValue[i]}
+                        }
+                    fi
+
+                    if [[ ${curseValue[i]} > ${max[$itYear]} ]]; then
+                        {
+                            max[$itYear]=${curseValue[i]}
+                        }
+                    fi
+
+                    if [[ ${curseValue[i]} < ${min[$itYear]} ]]; then
+                        {
+                            min[$itYear]=${curseValue[i]}
+                        }
+                    fi
                 }
 
             fi
 
-            # echo "${curseDate[i]}"
         }
     fi
 done
 
+# ##########
+# echo "=========== TEST MIN MAX ON YEAR============="
+# for year in "${!max[@]}"; do
+#     echo "$year"
+#     echo "${max[$year]}"
+#     echo "${min[$year]}"
+#     echo "--------------------------------------"
+# done
+# echo "=========== /TEST MIN MAX ON YEAR============="
+# exit
+# ##########
 
-echo $b
+declare -A volatail
 
+for year in "${!max[@]}"; do
+    volatail[$year]=$(awk 'BEGIN{print '"${max[$year]}"' - '"${min[$year]}"'}' | tr ',' '.')
 
+    # ########### Test Volatail Calculation ############
+    # echo "----------"
+    # echo "$year"
+    # echo "${volatail[$year]}"
+    # ########### /Test Volatail Calculation ############
+done
 
+for year in "${!volatail[@]}"; do
+    if [[ $minVolatail = "" ]]; then
+        minVolatail=${volatail[$year]}
+        targetYear=$year
+    fi
 
-# else
-#     {
-#         echo "We have not data from this year"
-#         exit
-#     }
+    if [[ ${volatail[$year]} < $minVolatail ]]; then
+        {
+            minVolatail=${volatail[$year]}
+            targetYear=$year
 
-# echo ${#curse[@]}
+        }
+    fi
+done
 
-# echo ${#curseDate[@]}
-# echo ${#curseValue[@]}
+echo "---------------------"
+echo "Year of min volatail"
+echo "$targetYear"
+echo
+echo "Min volatail:"
+echo "$minVolatail"
 
-# echo "${curseDate[@]}"
-# echo "${curseValue[@]}"
+#
+#
+#
+#
+#
+#
+#
+#
+##########################################################################################
+#DATA
+# curseDate[i - 1]=$(date -d @"$(echo "${curse[i - 1]}" | awk '{ gsub("0*$",""); print }')" +%Y-%m-%d)
+# echo "${curseDate[i - 1]}"
+# OR
+# curseDate[i - 1]=$(echo "${curse[i - 1]}" | awk '{ gsub("0*$",""); print }')
+##########################################################################################
+
+##################################################################
+#SUM
+# b=0
+# unset bisnesDays
+# unset max
+# unset min
+# # declare -A sumYearsCurs
+# for ((i = 0; i <= ${#curseDate[@]}; i++)); do
+#     if [[ $startYear < ${curseDate[i]} ]]; then
+#         {
+#             itMonth=$(date -d "${curseDate[i]}" '+%m')
+#             if [[ "$itMonth" == "$checkMonth" ]]; then
+#                 {
+#                     itYear="$(date -d "${curseDate[i]}" '+%Y')"
+#                     echo "$itYear $itMonth ${curseValue[i]}"
+#                     # sumYearsCurs[$itYear]=$(awk 'BEGIN{print '"${sumYearsCurs[$itYear]}"' + '"${curseValue[i]}"'}' | tr ',' '.')
+#                     # ((bisnesDays++))
+#                     # echo "${sumYearsCurs[$itYear]}"
+#
+#                 }
+#             fi
+#         }
+#     fi
+# done
+#/SUM
+##################################################################
