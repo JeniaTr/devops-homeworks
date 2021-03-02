@@ -1,2 +1,5 @@
 bash-tests.sh
 quotes.json
+t.conf
+*.txt
+test*
