@@ -1,7 +1,7 @@
 #!/bin/bash
 token=$(head -1 t.conf)
-chat=$(sed -n 2p t.conf)
-
+#chat=$(sed -n 2p t.conf)
+chat="${1}"
 subject="${2}"
 message="${3}"
 
