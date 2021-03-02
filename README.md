@@ -35,3 +35,19 @@ And then run the script itself by executing the line:
 After that, the result of the script execution will be shown in the terminal. Namely, the year and the value of the minimum volatility will be shown - starting from the year specified in the script (provided that there is data from this year, if there is no data, the data will be processed starting from the first available one) and for the month specified in the script.
 
 Year and month values are specified in the assignment (starting from 2005 and referring to the 03th month)
+
+
+
+
+
+----
+## Telegram bot
+Change the token in the code to the one you will receive when registering the bot.
+
+- **https://marketplace.creatio.com/sites/marketplace/files/app-guide/Instructions._Telegram_bot_1.pdf**
+
+Put as arguments __$chat__ - chat id __$subject__ - topic  __$message__ - body of message
+
+- **./telegram.sh $chat $subject $message**
+
+And the message will be sent to the selected chat
