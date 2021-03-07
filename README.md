@@ -40,8 +40,15 @@ Year and month values are specified in the assignment (starting from 2005 and re
 ----
  ### Folder hw1p2 -- Become financial guru
 
+You need to install python. Here is the installation link:
 
+- **https://linuxize.com/post/how-to-install-python-3-8-on-ubuntu-18-04/**
 
+And before running the script, you need to install an additional module.
+
+- **pip install PyGithub**
+
+After that, you can start running the script itself and performing the necessary actions. which are indicated in the __menu__.
 
 ----
 ## Telegram bot

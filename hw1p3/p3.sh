@@ -29,9 +29,12 @@ function prodContributors() {
 }
 
 menu=(
-    [1]='Open PR'
+    [1]='If there are open pull requests for a repository.'
     [2]='Most productive contributors (PR>1)'
-    [3]='tre'
+    [3]='Number of PRs each contributor has created with the labels'
+    [4]='4'
+    [5]='5'
+
 )
 select parr in "${menu[@]}"; do
     case $parr in
@@ -47,6 +50,15 @@ select parr in "${menu[@]}"; do
         ;;
 
     "${menu[3]}")
+        python3.8 scrypt01.py
+        break
+        ;;
+
+    "${menu[4]}")
+        break
+        ;;
+
+    "${menu[5]}")
         break
         ;;
 
