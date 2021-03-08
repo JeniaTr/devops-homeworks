@@ -1,7 +1,6 @@
 # * print the number of PRs each contributor has created with the labels
 import sys
 import config
-
 from github import Github
 
 g = Github(config.token)
@@ -20,19 +19,3 @@ for pull in repo.get_pulls(state="open"):
 
 for k, v in contrib_labels.items():
     print(k, " - ", v, " PRs")
-
-##
-#
-#
-#
-#
-#
-# contrib_labels = {}
-# for pull in repo.get_pulls():
-#     for label in pull.labels:
-#         if pull.labels:
-#             if pull.user.login in contrib_labels:
-#                 contrib_labels[pull.user.login] = contrib_labels[pull.user.login] + 1
-#             else:
-#                 contrib_labels[pull.user.login] = 1
-# print(contrib_labels)

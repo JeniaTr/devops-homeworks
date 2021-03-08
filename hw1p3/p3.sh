@@ -32,7 +32,8 @@ menu=(
     [1]='If there are open pull requests for a repository.'
     [2]='Most productive contributors (PR>1)'
     [3]='Number of PRs each contributor has created with the labels'
-    [4]='4'
+    [4]='Print a list of pull requests sorted by - the number of changed files.'
+    # (implement your own feature that you find the most attractive: anything from sorting to comment count or even fancy output format)'
     [5]='5'
 
 )
@@ -55,6 +56,7 @@ select parr in "${menu[@]}"; do
         ;;
 
     "${menu[4]}")
+        python3.8 scrypt02.py
         break
         ;;
 
