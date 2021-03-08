@@ -15,6 +15,7 @@ There are several options for launching:
 2) Run the script with the tags. The tag can be the __$app__ - name of the process or its PID and __$parr__ - number of parameter from whois __1-Organization 2-City 3-Country__, and also __$tailIPs__ - number of last IPs to check
  - **$./bash.sh $app $parr $tailIPs**
 
+----
 
  ### Folder hw1p2 -- Become financial guru
 
@@ -36,9 +37,18 @@ After that, the result of the script execution will be shown in the terminal. Na
 
 Year and month values are specified in the assignment (starting from 2005 and referring to the 03th month)
 
+----
+ ### Folder hw1p2 -- Become financial guru
 
+You need to install python. Here is the installation link:
 
+- **https://linuxize.com/post/how-to-install-python-3-8-on-ubuntu-18-04/**
 
+And before running the script, you need to install an additional module.
+
+- **pip install PyGithub**
+
+After that, you can start running the script itself and performing the necessary actions. which are indicated in the __menu__.
 
 ----
 ## Telegram bot
@@ -51,3 +61,5 @@ Put as arguments __$chat__ - chat id __$subject__ - topic  __$message__ - body o
 - **./telegram.sh $chat $subject $message**
 
 And the message will be sent to the selected chat
+
+---

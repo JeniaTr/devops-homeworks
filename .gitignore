@@ -3,3 +3,8 @@ quotes.json
 t.conf
 *.txt
 test*
+config.py
+.vscode
+*cache*
+*.swp
+*.pyc
