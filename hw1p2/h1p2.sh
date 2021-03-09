@@ -1,16 +1,9 @@
 #!/bin/bash
 #########################################################################
-#
-#
 # rm quotes.json
 # curl -s https://yandex.ru/news/quotes/graph_2000.json > ./quotes.json
-#
-#
 clear
-
 readarray -t curse < <(jq -r '.prices[][]' quotes.json)
-# readarray -t curse < <(jq -r '.prices[][]' quotes.json| tr '.' ',')
-
 echo ${#curse[@]}
 
 for ((i = 1; i <= ${#curse[@]}; i = i + 2)); do
@@ -19,8 +12,6 @@ for ((i = 1; i <= ${#curse[@]}; i = i + 2)); do
     # OR
     tempData=$(echo "${curse[i - 1]}" | rev | cut -c 4- | rev)
     curseDate[i - 1]=$(date -d @"$tempData" +%Y-%m-%d)
-    ####
-
     #VALUE
     curseValue[i - 1]=${curse[i]}
 done
@@ -133,47 +124,4 @@ echo "Year of min volatail"
 echo "$targetYear"
 echo
 echo "Min volatail:"
-echo "$minVolatail"
-
-#
-#
-#
-#
-#
-#
-#
-#
-##########################################################################################
-#DATA
-# curseDate[i - 1]=$(date -d @"$(echo "${curse[i - 1]}" | awk '{ gsub("0*$",""); print }')" +%Y-%m-%d)
-# echo "${curseDate[i - 1]}"
-# OR
-# curseDate[i - 1]=$(echo "${curse[i - 1]}" | awk '{ gsub("0*$",""); print }')
-##########################################################################################
-
-##################################################################
-#SUM
-# b=0
-# unset bisnesDays
-# unset max
-# unset min
-# # declare -A sumYearsCurs
-# for ((i = 0; i <= ${#curseDate[@]}; i++)); do
-#     if [[ $startYear < ${curseDate[i]} ]]; then
-#         {
-#             itMonth=$(date -d "${curseDate[i]}" '+%m')
-#             if [[ "$itMonth" == "$checkMonth" ]]; then
-#                 {
-#                     itYear="$(date -d "${curseDate[i]}" '+%Y')"
-#                     echo "$itYear $itMonth ${curseValue[i]}"
-#                     # sumYearsCurs[$itYear]=$(awk 'BEGIN{print '"${sumYearsCurs[$itYear]}"' + '"${curseValue[i]}"'}' | tr ',' '.')
-#                     # ((bisnesDays++))
-#                     # echo "${sumYearsCurs[$itYear]}"
-#
-#                 }
-#             fi
-#         }
-#     fi
-# done
-#/SUM
-##################################################################
+echo "$minVolatail".
