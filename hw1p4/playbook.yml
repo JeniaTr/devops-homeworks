@@ -1,0 +1,8 @@
+---
+- name: Test connection to my servers
+  hosts: PROD_WEB
+  become: yes
+
+  tasks:
+    - name: ping my servers
+      ping:

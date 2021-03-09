@@ -1,0 +1,6 @@
+[PROD_WEB]
+myserv3 ansible_host=10.10.20.40
+
+[test]
+myserv ansible_host=192.168.56.101
+myserv2 ansible_host=192.168.56.102
