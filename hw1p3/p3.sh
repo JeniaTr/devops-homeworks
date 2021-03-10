@@ -1,10 +1,20 @@
 #!/bin/bash
 clear
+url=$1
+
+if [ -z "$url" ]; then
+    url="https://github.com/Nightonke/GithubWidget"
+fi
+
 # user="jeniatr"
 # repo="devops-homeworks"
+# user="octocat"
+# repo="hello-world"
 
-user="octocat"
-repo="hello-world"
+function pars_url() {
+    user=$(echo "$url" | cut -d / -f4)
+    repo=$(echo "$url" | cut -d / -f5)
+}
 
 function if_open() {
     open=$(curl --silent "https://api.github.com/repos/$user/$repo/pulls" |
@@ -27,6 +37,11 @@ function prodContributors() {
         sort | uniq -c |
         awk '{if($1>1) print $2 " - made " $1 " Pull-Requests";}'
 }
+
+pars_url
+
+echo "User: $user"
+echo "Repo: $repo"
 
 menu=(
     [1]='If there are open pull requests for a repository.'
