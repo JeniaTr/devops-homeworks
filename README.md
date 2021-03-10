@@ -50,7 +50,7 @@ And before running the script, you need to install an additional module.
 
 Grant launch rights:
 
-- **- **$sudo chmod u+x p3.sh**
+- **$sudo chmod u+x p3.sh**
 
 After that, you can start running the script itself and performing the necessary actions. which are indicated in the __menu__.
 
