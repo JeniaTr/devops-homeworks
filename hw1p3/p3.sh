@@ -6,11 +6,6 @@ if [ -z "$url" ]; then
     url="https://github.com/PyGithub/PyGithub"
 fi
 
-# user="jeniatr"
-# repo="devops-homeworks"
-# user="octocat"
-# repo="hello-world"
-
 function pars_url() {
     user=$(echo "$url" | cut -d / -f4)
     repo=$(echo "$url" | cut -d / -f5)
@@ -64,12 +59,12 @@ select parr in "${menu[@]}"; do
         ;;
 
     "${menu[3]}")
-        python3.8 scrypt01.py "$user" "$repo" "1" 
+        python3.8 scrypt01.py "$user" "$repo" "1"
         break
         ;;
 
     "${menu[4]}")
-        python3.8 scrypt01.py "$user" "$repo" "2" 
+        python3.8 scrypt01.py "$user" "$repo" "2"
         break
         ;;
 

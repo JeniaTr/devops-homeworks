@@ -58,7 +58,7 @@ else:
 
 pulls = repo.get_pulls(state='open', sort='created')
 
-print ("\n")
+print("\n")
 if choiceScript == "1":
     printUsersPRWithlabeles(usersPRWithlabeles(pulls))
 elif choiceScript == "2":
