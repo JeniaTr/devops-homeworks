@@ -1,10 +1,20 @@
 #!/bin/bash
 clear
+url=$1
+
+if [ -z "$url" ]; then
+    url="https://github.com/PyGithub/PyGithub"
+fi
+
 # user="jeniatr"
 # repo="devops-homeworks"
+# user="octocat"
+# repo="hello-world"
 
-user="octocat"
-repo="hello-world"
+function pars_url() {
+    user=$(echo "$url" | cut -d / -f4)
+    repo=$(echo "$url" | cut -d / -f5)
+}
 
 function if_open() {
     open=$(curl --silent "https://api.github.com/repos/$user/$repo/pulls" |
@@ -28,14 +38,17 @@ function prodContributors() {
         awk '{if($1>1) print $2 " - made " $1 " Pull-Requests";}'
 }
 
+pars_url
+
+echo "User: $user"
+echo "Repo: $repo"
+
 menu=(
     [1]='If there are open pull requests for a repository.'
     [2]='Most productive contributors (PR>1)'
     [3]='Number of PRs each contributor has created with the labels'
     [4]='Print a list of pull requests sorted by - the number of changed files.'
     # (implement your own feature that you find the most attractive: anything from sorting to comment count or even fancy output format)'
-    [5]='5'
-
 )
 select parr in "${menu[@]}"; do
     case $parr in
@@ -51,16 +64,12 @@ select parr in "${menu[@]}"; do
         ;;
 
     "${menu[3]}")
-        python3.8 scrypt01.py
+        python3.8 scrypt01.py "$user" "$repo" "1" 
         break
         ;;
 
     "${menu[4]}")
-        python3.8 scrypt02.py
-        break
-        ;;
-
-    "${menu[5]}")
+        python3.8 scrypt01.py "$user" "$repo" "2" 
         break
         ;;
 
