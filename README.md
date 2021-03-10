@@ -38,12 +38,8 @@ After that, the result of the script execution will be shown in the terminal. Na
 Year and month values are specified in the assignment (starting from 2005 and referring to the 03th month)
 
 ----
-<<<<<<< HEAD
- ### Folder hw1p3 -- Become financial guru
-=======
  ### Folder hw1p3 -- GitHub
->>>>>>> main
-
+ 
 You need to install python. Here is the installation link:
 
 - **https://linuxize.com/post/how-to-install-python-3-8-on-ubuntu-18-04/**
