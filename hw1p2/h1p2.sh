@@ -124,4 +124,4 @@ echo "Year of min volatail"
 echo "$targetYear"
 echo
 echo "Min volatail:"
-echo "$minVolatail".
+echo "$minVolatail"
