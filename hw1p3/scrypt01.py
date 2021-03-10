@@ -4,9 +4,6 @@ import config
 from github import Github
 from sys import argv
 
-g = Github(config.token)
-repo = g.get_repo(config.user+"/"+config.reository)
-
 
 def usersPRWithlabeles(pulls):
     contrib_labels = {}
@@ -34,8 +31,11 @@ def filesСhangedInPullRequest(pulls):
 
 
 def printUsersPRWithlabeles(arr):
-    for k, v in arr.items():
-        print(k, " - ", v, " PRs")
+    if len(arr) > 1:
+        for k, v in arr.items():
+            print(k, " - ", v, " PRs")
+    else:
+        print("No information available to submit.")
 
 
 def printFilesСhangedInPullRequest(arr):
@@ -45,13 +45,23 @@ def printFilesСhangedInPullRequest(arr):
     # print (*arr ,sep='\n')
 
 
+g = Github(config.token)
+
+if len(sys.argv) > 1:
+    repo = g.get_repo(argv[1]+"/"+argv[2])
+    choiceScript = argv[3]
+else:
+    print("Default values")
+    repo = g.get_repo(config.user+"/"+config.reository)
+    choiceScript = config.choice
+
+
 pulls = repo.get_pulls(state='open', sort='created')
 
-script, first, second, third = argv
-
-if argv[3] == "1":
+print ("\n")
+if choiceScript == "1":
     printUsersPRWithlabeles(usersPRWithlabeles(pulls))
-elif argv[3] == "2":
+elif choiceScript == "2":
     printFilesСhangedInPullRequest(filesСhangedInPullRequest(pulls))
 else:
     print("Doesn't fit any of the options")
