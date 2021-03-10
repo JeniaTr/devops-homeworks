@@ -3,7 +3,7 @@ clear
 url=$1
 
 if [ -z "$url" ]; then
-    url="https://github.com/Nightonke/GithubWidget"
+    url="https://github.com/PyGithub/PyGithub"
 fi
 
 # user="jeniatr"
@@ -49,8 +49,6 @@ menu=(
     [3]='Number of PRs each contributor has created with the labels'
     [4]='Print a list of pull requests sorted by - the number of changed files.'
     # (implement your own feature that you find the most attractive: anything from sorting to comment count or even fancy output format)'
-    [5]='5'
-
 )
 select parr in "${menu[@]}"; do
     case $parr in
@@ -66,16 +64,12 @@ select parr in "${menu[@]}"; do
         ;;
 
     "${menu[3]}")
-        python3.8 scrypt01.py
+        python3.8 scrypt01.py "$user" "$repo" "1" 
         break
         ;;
 
     "${menu[4]}")
-        python3.8 scrypt02.py
-        break
-        ;;
-
-    "${menu[5]}")
+        python3.8 scrypt01.py "$user" "$repo" "2" 
         break
         ;;
 
