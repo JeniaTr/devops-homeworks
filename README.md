@@ -63,6 +63,10 @@ Or you can run the script specifying the parameter - repository for analysis. Fo
 ----
 
  ### Folder hw1p4 -- Ansible/Flask
+ Installation Flask
+ https://flask.palletsprojects.com/en/1.1.x/installation/
+- **pip install flask**
+- **pip install flask_json**
 
 
 ----
