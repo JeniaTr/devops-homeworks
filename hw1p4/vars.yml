@@ -2,3 +2,18 @@
 # Файл переменных 'vars.yml'
 # python -c 'import crypt; print crypt.crypt("Total123", "$1$MyPass$")'
 passAnsCfg: $1$MyPass$6bpqhn6WdWfsQN0cXHB7Z1
+
+app_name: myapp
+
+LOCAL_PROJECT_HOME: "/home/jenia/homework/hw1p4/myapp"
+# LOCAL_PROJECT_HOME: "myapp"
+PROJECT_HOME: "~/my_web_site"
+
+LOCAL_SYSTEMD_HOME: "/home/jenia/homework/hw1p4/systemd"
+LOCAL_NGINX_HOME: "/home/jenia/homework/hw1p4/nginx"
+
+# PROJECT_HOME: "/var/www/my_web_site"
+MAIN_PY: "main.py" # main file to launch website
+PORT: 5000 # port of the website
+
+USER: "anscfg"

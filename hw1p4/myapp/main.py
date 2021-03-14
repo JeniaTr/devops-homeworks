@@ -1,6 +1,7 @@
 from flask import Flask, request, make_response, redirect, abort, render_template, jsonify
 from flask_json import FlaskJSON, JsonError, json_response, as_json
 import random
+import sys
 
 app = Flask(__name__)
 app.debug = True
@@ -79,4 +80,5 @@ def emojiDecorator(word, count):
 
 
 if __name__ == "__main__":
+    # app.run(host="0.0.0.0", port=sys.argv[1])
     app.run()
