@@ -1,11 +1,7 @@
 #!/bin/bash
 #########################################################################
 # rm quotes.json
-<<<<<<< HEAD
-curl -s https://yandex.ru/news/quotes/graph_2000.json > ./quotes.json
-=======
 # curl -s https://yandex.ru/news/quotes/graph_2000.json > ./quotes.json
->>>>>>> main
 clear
 readarray -t curse < <(jq -r '.prices[][]' quotes.json)
 echo ${#curse[@]}
@@ -128,8 +124,4 @@ echo "Year of min volatail"
 echo "$targetYear"
 echo
 echo "Min volatail:"
-<<<<<<< HEAD
 echo "$minVolatail"
-=======
-echo "$minVolatail"
->>>>>>> main

@@ -2,7 +2,7 @@
 - name: Test connection to my servers
   hosts: PROD_WEB
   become: yes
-  # user: anscfg
+  user: anscfg
 
   tasks:
     - name: ping my servers

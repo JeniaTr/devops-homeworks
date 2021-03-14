@@ -1,0 +1,110 @@
+---
+- name: test
+  hosts: PROD_WEB
+  vars_files:
+    - ../vars.yml
+  user: anscfg
+
+  tasks:
+    - name: Create app directory
+      file:
+        path: "{{ PROJECT_HOME }}"
+        state: directory
+        # owner: "{{ USER }}"
+
+    - name: Create templates directory
+      file:
+        path: "{{ PROJECT_HOME }}/templates"
+        state: directory
+        # owner: "{{ USER }}"
+
+    - name: Copy app to directory
+      copy:
+        src: "{{ item }}"
+        dest: "{{ PROJECT_HOME }}"
+        # owner: "{{ USER }}"
+      with_fileglob:
+        - "{{ LOCAL_PROJECT_HOME }}/*"
+
+    - name: Copy templates to directory
+      copy:
+        src: "{{ item }}"
+        dest: "{{ PROJECT_HOME }}/templates"
+        # owner: "{{ USER }}"
+      with_fileglob:
+        - "{{ LOCAL_PROJECT_HOME }}/templates/*"
+#############################
+    - name: update cache
+      raw: "sudo apt-get update && sudo apt-get -y upgrade"
+      become: true
+
+    - name: python3-apt
+      package:
+        name: python3-apt
+        state: latest
+      become: true
+
+    - name: Install virtualenv
+      package:
+        name: virtualenv
+      become: true
+
+    - name: Create virtualenv for project
+      shell: virtualenv "{{PROJECT_HOME}}/venv"
+        creates="{{PROJECT_HOME}}/venv/bin/activate"
+      become: true
+
+
+    - name: Install Flask in the virtualenv
+      # become: yes
+      pip:
+        requirements: "{{PROJECT_HOME}}/requirements.txt"
+        virtualenv: "{{PROJECT_HOME}}/venv"
+
+##########################
+
+    - name: Copy Systemd files
+      become: yes
+      template:
+        src: "{{item}}"
+        dest: "/etc/systemd/system"
+      with_fileglob:
+        - "{{LOCAL_SYSTEMD_HOME}}/*"
+
+    - name: Start Webapp
+      become: yes
+      systemd:
+        name: myapp.service
+        enabled: yes
+        state: restarted
+        daemon_reload: yes
+
+##########################
+
+    - name: Setup Nginx
+      package:
+        name: nginx
+        state: present
+      become: true
+
+    - name: Copy Nginx files
+      template:
+        src: "{{item}}"
+        dest: "/etc/nginx/sites-available"
+      with_fileglob:
+        - "{{LOCAL_NGINX_HOME}}/*"
+      become: true
+
+    - name: Create symlink for nginx
+      file:
+        src: /etc/nginx/sites-available/myapp
+        dest: /etc/nginx/sites-enabled/myapp
+        state: link
+
+    - name: Restart Nginx
+      become: yes
+      systemd:
+        name: nginx
+        enabled: yes
+        state: restarted
+        daemon_reload: yes

@@ -67,6 +67,7 @@ Or you can run the script specifying the parameter - repository for analysis. Fo
  https://flask.palletsprojects.com/en/1.1.x/installation/
 - **pip install flask**
 - **pip install flask_json**
+- **python -m pip install -r requirements.txt**
 
 
 ----
