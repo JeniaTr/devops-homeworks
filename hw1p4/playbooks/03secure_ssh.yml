@@ -1,0 +1,67 @@
+---
+# Поменять 'hosts: all' на нужные хосты
+# В строке '7' добавьте своего пользователя
+# В строке '60' добавьте своего пользователя
+- hosts: PROD_WEB
+  become: true
+  remote_user: anscfg
+  tasks:
+    # - name: Добавить обмен ключами, шифрами и MAC
+    # - lineinfile: dest=/etc/ssh/sshd_config regexp='^KexAlgorithms'line='KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256'
+    # - lineinfile: dest=/etc/ssh/sshd_config regexp='^Ciphers' line='Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr'
+
+    - name: Включить наиболее безопасные алгоритмы аутентификации сервера и 2-ю версию протокола
+      lineinfile: dest=/etc/ssh/sshd_config regexp='^Protocol 2' line='Protocol 2'
+    - lineinfile: dest=/etc/ssh/sshd_config regexp='^HostKey /etc/ssh/ssh_host_ed25519_key' line='HostKey /etc/ssh/ssh_host_ed25519_key'
+    - lineinfile: dest=/etc/ssh/sshd_config regexp='^HostKey /etc/ssh/ssh_host_rsa_key' line='HostKey /etc/ssh/ssh_host_rsa_key'
+
+    - name: Отключить небезопасные алгоритмы
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^HostKey /etc/ssh/ssh_host_ecdsa_key"
+        state: absent
+    - lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^HostKey /etc/ssh/ssh_host_dsa_key"
+        state: absent
+
+    - name: И удалить файлы
+      file:
+        dest: /etc/ssh/ssh_host_ecdsa_key.pub
+        state: absent
+    - file:
+        dest: /etc/ssh/ssh_host_ecdsa_key
+        state: absent
+    - file:
+        dest: /etc/ssh/ssh_host_dsa_key.pub
+        state: absent
+    - file:
+        dest: /etc/ssh/ssh_host_dsa_key
+        state: absent
+
+    - name: Отключить логин по паролю и разрешить логиниться только с помощью publickey.
+      lineinfile: dest=/etc/ssh/sshd_config regexp='^#?AuthenticationMethods' line='AuthenticationMethods publickey'
+    - lineinfile: dest=/etc/ssh/sshd_config regexp='^#?PasswordAuthentication' line='PasswordAuthentication no'
+    - lineinfile: dest=/etc/ssh/sshd_config regexp='^#?ChallengeResponseAuthentication' line='ChallengeResponseAuthentication no'
+    - lineinfile: dest=/etc/ssh/sshd_config regexp='^#?PubkeyAuthentication' line='PubkeyAuthentication yes'
+
+    # Установить LogLevel на уровень VERBOSE, чтобы регистрировать отпечаток ключа пользователя при входе в систему. Нужно четко отслеживать, какой ключ использовался для входа в систему.
+    - lineinfile: dest=/etc/ssh/sshd_config regexp='^LogLevel' line='LogLevel VERBOSE'
+
+    # Запрет root-логина. Потому что трудно отследить, какой процесс принадлежит какому пользователю root
+    # В Linux пользовательские сеансы отслеживаются с использованием идентификатора сеанса на стороне ядра, однако этот идентификатор сеанса не записывается OpenSSH.
+    # Кроме того, только инструменты, такие как systemd и audd записывают идентификатор сеанса процесса.
+    # В других ОС идентификатор сеанса пользователя не обязательно записывается на всей стороне ядра.
+    # Использование обычных пользователей в сочетании с /bin/su или /usr/bin/sudo обеспечивает четкое отслеживание аудита.
+    - lineinfile: dest=/etc/ssh/sshd_config regexp='^PermitRootLogin' line='PermitRootLogin No'
+
+    # Разрешить логиниться только определенным пользователям (можно указать AllowGroups).
+    - lineinfile: dest=/etc/ssh/sshd_config regexp='^AllowUsers' line='AllowUsers anscfg'
+
+    - name: Перезапуск sshd.
+      service:
+        name: sshd
+        state: restarted
+
+    - debug:
+        msg: "Готово! При необходимости сгенерируйте клиентские ключи с помощью следующей команды: ssh-keygen -t ed25519 -o -a 100 && ssh-keygen -t rsa -b 4096 -o -a 100"

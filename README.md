@@ -39,7 +39,7 @@ Year and month values are specified in the assignment (starting from 2005 and re
 
 ----
  ### Folder hw1p3 -- GitHub
-
+ 
 You need to install python. Here is the installation link:
 
 - **https://linuxize.com/post/how-to-install-python-3-8-on-ubuntu-18-04/**
@@ -59,6 +59,15 @@ After that, you can start running the script itself and performing the necessary
 
 Or you can run the script specifying the parameter - repository for analysis. For example:
 - **./p3.sh https://github.com/PyGithub/PyGithub**
+
+----
+
+ ### Folder hw1p4 -- Ansible/Flask
+ Installation Flask
+ https://flask.palletsprojects.com/en/1.1.x/installation/
+- **pip install flask**
+- **pip install flask_json**
+
 
 ----
 ## Telegram bot

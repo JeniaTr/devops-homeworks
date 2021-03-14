@@ -1,0 +1,4 @@
+---
+# Файл переменных 'vars.yml'
+# python -c 'import crypt; print crypt.crypt("Total123", "$1$MyPass$")'
+passAnsCfg: $1$MyPass$6bpqhn6WdWfsQN0cXHB7Z1
