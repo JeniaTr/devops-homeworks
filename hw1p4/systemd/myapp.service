@@ -1,5 +1,5 @@
 [Unit]
-Description=gunicorn daemon
+Description=Gunicorn instance to serve myapp
 After=network.target
 
 [Service]

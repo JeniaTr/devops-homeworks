@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, request, make_response, redirect, abort, render_template, jsonify
 from flask_json import FlaskJSON, JsonError, json_response, as_json
 import random

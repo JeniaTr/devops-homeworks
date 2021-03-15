@@ -6,6 +6,14 @@
   user: anscfg
 
   tasks:
+    - name: Create directory
+      become: true
+      file: path=/var/www
+        mode=0755
+        owner="{{ USER }}"
+        group=www-data
+        state=directory
+
     - name: Create app directory
       file:
         path: "{{ PROJECT_HOME }}"
@@ -33,35 +41,34 @@
         # owner: "{{ USER }}"
       with_fileglob:
         - "{{ LOCAL_PROJECT_HOME }}/templates/*"
-#############################
+
+    #############################
     - name: update cache
       raw: "sudo apt-get update && sudo apt-get -y upgrade"
-      become: true
+      become: yes
 
     - name: python3-apt
       package:
         name: python3-apt
         state: latest
-      become: true
+      become: yes
 
     - name: Install virtualenv
       package:
         name: virtualenv
-      become: true
+      become: yes
 
     - name: Create virtualenv for project
-      shell: virtualenv "{{PROJECT_HOME}}/venv"
+      shell: 
+        virtualenv "{{PROJECT_HOME}}/venv"
         creates="{{PROJECT_HOME}}/venv/bin/activate"
-      become: true
 
-
-    - name: Install Flask in the virtualenv
-      # become: yes
+    - name: Install PIP-s Flask... in the virtualenv
       pip:
         requirements: "{{PROJECT_HOME}}/requirements.txt"
         virtualenv: "{{PROJECT_HOME}}/venv"
 
-##########################
+    ##########################
 
     - name: Copy Systemd files
       become: yes
@@ -71,7 +78,7 @@
       with_fileglob:
         - "{{LOCAL_SYSTEMD_HOME}}/*"
 
-    - name: Start Webapp
+    - name: Start myapp
       become: yes
       systemd:
         name: myapp.service
@@ -79,13 +86,25 @@
         state: restarted
         daemon_reload: yes
 
-##########################
+    ##########################
 
     - name: Setup Nginx
       package:
         name: nginx
         state: present
       become: true
+
+    - name: change server_names_hash_bucket_size in main nginx.conf
+      become: true
+      lineinfile:
+        dest: "/etc/nginx/nginx.conf"
+        regexp: '^\s*server_names_hash_bucket_size'
+        line: "    server_names_hash_bucket_size 64;"
+        insertafter: "http {"
+        mode: '0640'
+        owner: "root"
+        group: "root"
+      # notify: restart nginx
 
     - name: Copy Nginx files
       template:
@@ -96,9 +115,10 @@
       become: true
 
     - name: Create symlink for nginx
+      become: yes
       file:
-        src: /etc/nginx/sites-available/myapp
-        dest: /etc/nginx/sites-enabled/myapp
+        src: /etc/nginx/sites-available/myapp.conf
+        dest: /etc/nginx/sites-enabled/myapp.conf
         state: link
 
     - name: Restart Nginx

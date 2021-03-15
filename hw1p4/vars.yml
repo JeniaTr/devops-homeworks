@@ -7,7 +7,7 @@ app_name: myapp
 
 LOCAL_PROJECT_HOME: "/home/jenia/homework/hw1p4/myapp"
 # LOCAL_PROJECT_HOME: "myapp"
-PROJECT_HOME: "~/my_web_site"
+PROJECT_HOME: "/var/www/my_web_site"
 
 LOCAL_SYSTEMD_HOME: "/home/jenia/homework/hw1p4/systemd"
 LOCAL_NGINX_HOME: "/home/jenia/homework/hw1p4/nginx"
