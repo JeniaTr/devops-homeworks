@@ -1,9 +1,9 @@
 ---
 - name: test
   hosts: PROD_WEB
+  user: "{{ USER }}"
   vars_files:
     - ../vars.yml
-  user: anscfg
 
   tasks:
     - name: Create directory
