@@ -63,12 +63,42 @@ Or you can run the script specifying the parameter - repository for analysis. Fo
 ----
 
  ### Folder hw1p4 -- Ansible/Flask
- Installation Flask
- https://flask.palletsprojects.com/en/1.1.x/installation/
-- **pip install flask**
-- **pip install flask_json**
-- **python -m pip install -r requirements.txt**
 
+To check the availability and the first launch to create a user for ansible, the root user is used, therefore the base user variable in __"group_vars"__ is used:
+
+- ansible_user: root
+
+And the key to it:
+
+- ansible_ssh_private_key_file: /home/jenia/.ssh/admins_andersen.id_rsa
+
+To start the process of creating our new user, we need to check for the presence of these fields (which were mentioned above) and execute this line from the ansible directory(launching the playbook):
+
+- __ansible-playbook playbooks/02userAdd.yml__
+
+After that we need to comment out the lines __ "group_vars" __ related to the user root. Since all further actions will be performed with an ansible sub-user. And the entrance of the rest will be blocked. Lines to be uncommented:
+
+- ansible_user: anscfg
+- ansible_ssh_private_key_file: /home/jenia/.ssh/id_rsa
+
+After that, you can start the rest of the playbooks:
+
+Will change the rules for entering the SSH:
+- __ansible-playbook playbooks/03secure_ssh.yml__
+
+Creates directories, loads the environment, creates services, brings up the web:
+
+- __ansible-playbook playbooks/04flaskAppDeploy.yml__
+
+After that, you can send requests to our site, and receive responses from it, as well as view some web pages:
+
+flask.jeniatr.space/myIp
+
+flask.jeniatr.space/user/id (1-3)
+
+flask.jeniatr.space/404
+
+flask.jeniatr.space/about
 
 ----
 ## Telegram bot
