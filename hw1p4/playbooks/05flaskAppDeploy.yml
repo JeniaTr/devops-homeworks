@@ -59,8 +59,7 @@
       become: yes
 
     - name: Create virtualenv for project
-      shell: 
-        virtualenv "{{PROJECT_HOME}}/venv"
+      shell: virtualenv "{{PROJECT_HOME}}/venv"
         creates="{{PROJECT_HOME}}/venv/bin/activate"
 
     - name: Install PIP-s Flask... in the virtualenv
@@ -68,7 +67,7 @@
         requirements: "{{PROJECT_HOME}}/requirements.txt"
         virtualenv: "{{PROJECT_HOME}}/venv"
 
-    ##########################
+    # ##########################
 
     - name: Copy Systemd files
       become: yes
@@ -101,18 +100,48 @@
         regexp: '^\s*server_names_hash_bucket_size'
         line: "    server_names_hash_bucket_size 64;"
         insertafter: "http {"
-        mode: '0640'
+        mode: "0640"
         owner: "root"
         group: "root"
-      # notify: restart nginx
 
-    - name: Copy Nginx files
+    - name: Copy Nginx files -main
       template:
         src: "{{item}}"
         dest: "/etc/nginx/sites-available"
       with_fileglob:
-        - "{{LOCAL_NGINX_HOME}}/*"
+        - "{{LOCAL_NGINX_HOME}}/myapp.conf"
       become: true
+
+    - name: Copy Nginx files -main
+      template:
+        src: "{{item}}"
+        dest: /etc/nginx/
+      with_fileglob:
+        - "{{LOCAL_NGINX_HOME}}/ssl.conf"
+      become: true
+
+    - name: Create app directory
+      file:
+        path: "/etc/nginx/cert"
+        state: directory
+      become: true
+
+    - name: Copy Nginx files - cert
+      template:
+        src: "{{item}}"
+        dest: "/etc/nginx/cert"
+      with_fileglob:
+        - "{{LOCAL_NGINX_HOME}}/dhparam.pem"
+        - "{{LOCAL_NGINX_HOME}}/nginx-selfsigned.crt"
+      become: true
+
+    - name: Copy Nginx files
+      become: yes
+      copy:
+        src: "{{LOCAL_NGINX_HOME}}/nginx-selfsigned.key"
+        dest: "/etc/nginx/cert"
+        mode: 0600
+        owner: "root"
 
     - name: Create symlink for nginx
       become: yes
