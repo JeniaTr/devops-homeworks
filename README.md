@@ -72,6 +72,8 @@ And the key to it:
 
 - ansible_ssh_private_key_file: /home/jenia/.ssh/admins_andersen.id_rsa
 
+(The credentials for the initial login to the server may change depending on how the user configures the login.)
+
 To start the process of creating our new user, we need to check for the presence of these fields (which were mentioned above) and execute this line from the ansible directory(launching the playbook):
 
 - __ansible-playbook playbooks/02userAdd.yml__
@@ -83,12 +85,19 @@ After that we need to comment out the lines __ "group_vars" __ related to the us
 
 After that, you can start the rest of the playbooks:
 
+Add rules to iptables:
+
+-__ansible-playbook playbooks/03edit_iptables.yml__
+
+
 Will change the rules for entering the SSH:
-- __ansible-playbook playbooks/03secure_ssh.yml__
+
+- __ansible-playbook playbooks/04secure_ssh.yml__
+
 
 Creates directories, loads the environment, creates services, brings up the web:
 
-- __ansible-playbook playbooks/04flaskAppDeploy.yml__
+- __ansible-playbook playbooks/05flaskAppDeploy.yml__
 
 After that, you can send requests to our site, and receive responses from it, as well as view some web pages:
 
