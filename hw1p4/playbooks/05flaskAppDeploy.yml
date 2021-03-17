@@ -77,10 +77,10 @@
       with_fileglob:
         - "{{LOCAL_SYSTEMD_HOME}}/*"
 
-    - name: Start myapp
+    - name: Start {{ app_name }}
       become: yes
       systemd:
-        name: myapp.service
+        name: "{{ app_name }}.service"
         enabled: yes
         state: restarted
         daemon_reload: yes
@@ -104,50 +104,37 @@
         owner: "root"
         group: "root"
 
-    - name: Copy Nginx files -main
-      template:
-        src: "{{item}}"
-        dest: "/etc/nginx/sites-available"
-      with_fileglob:
-        - "{{LOCAL_NGINX_HOME}}/myapp.conf"
-      become: true
-
-    - name: Copy Nginx files -main
-      template:
-        src: "{{item}}"
-        dest: /etc/nginx/
-      with_fileglob:
-        - "{{LOCAL_NGINX_HOME}}/ssl.conf"
-      become: true
-
     - name: Create app directory
       file:
         path: "/etc/nginx/cert"
         state: directory
       become: true
 
-    - name: Copy Nginx files - cert
+    - name: Copy Nginx files - with different permissions
+      become: true
+      copy:
+        src: "{{LOCAL_NGINX_HOME}}/{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
+      with_items:
+        - { src: 'ssl.conf',dest: '/etc/nginx/', mode: '0644'}
+        - { src: 'nginx-selfsigned.crt',dest: '/etc/nginx/cert', mode: '0644'}
+        - { src: 'dhparam.pem',dest: '/etc/nginx/cert', mode: '0644'}
+        - { src: 'nginx-selfsigned.key',dest: '/etc/nginx/cert', mode: '0600'}
+
+    - name: Copy Nginx files - {{ app_name }}.conf
       template:
         src: "{{item}}"
-        dest: "/etc/nginx/cert"
+        dest: "/etc/nginx/sites-available"
       with_fileglob:
-        - "{{LOCAL_NGINX_HOME}}/dhparam.pem"
-        - "{{LOCAL_NGINX_HOME}}/nginx-selfsigned.crt"
+        - "{{LOCAL_NGINX_HOME}}/{{ app_name }}.conf"
       become: true
-
-    - name: Copy Nginx files
-      become: yes
-      copy:
-        src: "{{LOCAL_NGINX_HOME}}/nginx-selfsigned.key"
-        dest: "/etc/nginx/cert"
-        mode: 0600
-        owner: "root"
 
     - name: Create symlink for nginx
       become: yes
       file:
-        src: /etc/nginx/sites-available/myapp.conf
-        dest: /etc/nginx/sites-enabled/myapp.conf
+        src: /etc/nginx/sites-available/{{ app_name }}.conf
+        dest: /etc/nginx/sites-enabled/{{ app_name }}.conf
         state: link
 
     - name: Restart Nginx
