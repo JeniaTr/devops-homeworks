@@ -1,5 +1,5 @@
 [Unit]
-Description=Gunicorn instance to serve myapp
+Description=Gunicorn instance to serve {{ app_name }}
 After=network.target
 
 [Service]
@@ -7,7 +7,7 @@ User=anscfg
 Group=www-data
 WorkingDirectory={{PROJECT_HOME}}
 Environment="PATH={{PROJECT_HOME}}/venv/bin"
-ExecStart={{PROJECT_HOME}}/venv/bin/gunicorn --workers 3 --bind unix:myapp.sock -m 007 wsgi:app
+ExecStart={{PROJECT_HOME}}/venv/bin/gunicorn --workers 3 --bind unix:{{ app_name }}.sock -m 007 wsgi:app
 
 [Install]
 WantedBy=multi-user.target
