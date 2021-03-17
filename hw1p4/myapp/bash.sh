@@ -11,4 +11,4 @@
 
 
 
-curl -X POST -d'{"word":"evilmartian", "count": 5}' http://flask.jeniatr.space/increment_value
+curl -X POST -d'{"word":"evilmartian", "count": 5}' -k  https://flask.jeniatr.space/increment_value
