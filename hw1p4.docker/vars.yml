@@ -3,8 +3,8 @@
 # python -c 'import crypt; print crypt.crypt("Total123", "$1$MyPass$")'
 passAnsCfg: $1$MyPass$6bpqhn6WdWfsQN0cXHB7Z1
 USER: "anscfg"
-PROJECT_HOME: "/mywebsite"
-LOCAL_PROJECT_HOME: "/home/jenia/homework/hw1p4.docker/myapp"
+PROJECT_HOME: "/home/anscfg"
+LOCAL_PROJECT_HOME: "/home/jenia/homework/hw1p4.docker/app"
 app_name: myapp
 
 # LOCAL_PROJECT_HOME: "myapp"

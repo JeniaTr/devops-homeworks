@@ -1,0 +1,53 @@
+---
+- hosts: PROD_WEB
+  become: yes
+  vars_files:
+    - ../vars.yml
+
+  tasks:
+    # - name: Install aptitude using apt
+    #   apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+    # - name: Install required system packages
+    #   apt: name={{ item }} state=latest update_cache=yes
+    #   loop:
+    #     [
+    #       "apt-transport-https",
+    #       "ca-certificates",
+    #       "curl",
+    #       "software-properties-common",
+    #       "gnupg2"
+    #     ]
+
+    # - name: Add Docker GPG apt Key
+    #   apt_key:
+    #     url: https://download.docker.com/linux/debian/gpg
+    #     state: present
+
+    # - name: Add Docker Repository
+    #   apt_repository:
+    #     repo: deb [arch=amd64] https://download.docker.com/linux/debian stretch stable
+    #     state: present
+
+    # - name: Update apt and install docker-ce
+    #   apt: update_cache=yes name=docker-ce state=latest
+
+    # - name: Add remote user to "docker" group
+    #   remote_user: "{{ USER }}"
+    #   user:
+    #     name: "{{ USER }}"
+    #     group: "docker"
+    #     append: yes
+
+    - name: Install docker-compose
+      remote_user: "{{ USER }}"
+      get_url:
+        url: https://github.com/docker/compose/releases/download/1.25.1-rc1/docker-compose-Linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: "+x"
+
+    - name: Copy and Execute the script
+      command: "sh {{PROJECT_HOME}}/app/run-docker.sh"
+      args:
+        chdir: "{{PROJECT_HOME}}/app"
+      become: false
