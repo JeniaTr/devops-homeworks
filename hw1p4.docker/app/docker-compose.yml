@@ -1,0 +1,25 @@
+version: '3'
+services:
+    app:
+        container_name: app
+        restart: always
+        build: ./myapp
+
+    webserver:
+        container_name: webserver
+        image: nginx:latest
+        restart: unless-stopped
+        tty: true
+        ports:
+        - "80:80"
+        - "443:443"
+        volumes:
+        - ./nginx/myapp.conf:/etc/nginx/conf.d/myapp.conf
+        - ./nginx/ssl.conf:/etc/nginx/ssl.conf
+        - ./nginx/cert/:/etc/nginx/ssl/
+        # environment:
+        #     - AppSettings:DBConnectionString=app://app:4000
+        depends_on:
+        - app
+
+
