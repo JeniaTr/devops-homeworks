@@ -1,0 +1,59 @@
+---
+- hosts: PROD_WEB
+  become: true
+  remote_user: "{{ USER }}"
+  vars_files:
+  - ../vars.yml
+
+  tasks:
+    - name: Enable the most secure server authentication/
+      lineinfile: dest=/etc/ssh/sshd_config regexp='^Protocol 2' line='Protocol 2'
+    - lineinfile: dest=/etc/ssh/sshd_config regexp='^HostKey /etc/ssh/ssh_host_ed25519_key' line='HostKey /etc/ssh/ssh_host_ed25519_key'
+    - lineinfile: dest=/etc/ssh/sshd_config regexp='^HostKey /etc/ssh/ssh_host_rsa_key' line='HostKey /etc/ssh/ssh_host_rsa_key'
+
+    - name: Disable unsafe algorithms
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^HostKey /etc/ssh/ssh_host_ecdsa_key"
+        state: absent
+    - lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^HostKey /etc/ssh/ssh_host_dsa_key"
+        state: absent
+
+    - name: Delete files
+      file:
+        dest: /etc/ssh/ssh_host_ecdsa_key.pub
+        state: absent
+    - file:
+        dest: /etc/ssh/ssh_host_ecdsa_key
+        state: absent
+    - file:
+        dest: /etc/ssh/ssh_host_dsa_key.pub
+        state: absent
+    - file:
+        dest: /etc/ssh/ssh_host_dsa_key
+        state: absent
+
+    - name: Disable login on password and allow login whith publickey.
+      lineinfile: dest=/etc/ssh/sshd_config regexp='^#?AuthenticationMethods' line='AuthenticationMethods publickey'
+    - lineinfile: dest=/etc/ssh/sshd_config regexp='^#?PasswordAuthentication' line='PasswordAuthentication no'
+    - lineinfile: dest=/etc/ssh/sshd_config regexp='^#?ChallengeResponseAuthentication' line='ChallengeResponseAuthentication no'
+    - lineinfile: dest=/etc/ssh/sshd_config regexp='^#?PubkeyAuthentication' line='PubkeyAuthentication yes'
+
+    - name: LogLevel - VERBOSE.
+      lineinfile: dest=/etc/ssh/sshd_config regexp='^LogLevel' line='LogLevel VERBOSE'
+
+    - name: Disale ssh root login.
+      lineinfile: dest=/etc/ssh/sshd_config regexp='^PermitRootLogin' line='PermitRootLogin No'
+
+    - name: Add user to allow-list.
+      lineinfile: dest=/etc/ssh/sshd_config regexp='^AllowUsers' line='AllowUsers {{ USER }}'
+
+    - name: Restart sshd.
+      service:
+        name: sshd
+        state: restarted
+
+    - debug:
+        msg: "Done! Generate client keys if necessary with the following command: ssh-keygen -t ed25519 -o -a 100 && ssh-keygen -t rsa -b 4096 -o -a 100"

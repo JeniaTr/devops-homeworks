@@ -110,6 +110,12 @@ flask.jeniatr.space/404
 flask.jeniatr.space/about
 
 ----
+
+ansible-galaxy collection install community.docker
+ansible-galaxy collection install ansible.posix
+
+
+----
 ## Telegram bot
 Change the token in the code to the one you will receive when registering the bot.
 

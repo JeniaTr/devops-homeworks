@@ -1,0 +1,11 @@
+---
+- name: Test connection to my servers
+  hosts: PROD_WEB
+  # become: yes
+  # user: anscfg
+  remote_user: root
+
+
+  tasks:
+    - name: ping my servers
+      ping:
