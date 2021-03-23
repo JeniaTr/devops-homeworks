@@ -5,39 +5,39 @@
     - ../vars.yml
 
   tasks:
-    # - name: Install aptitude using apt
-    #   apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+    - name: Install aptitude using apt
+      apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
 
-    # - name: Install required system packages
-    #   apt: name={{ item }} state=latest update_cache=yes
-    #   loop:
-    #     [
-    #       "apt-transport-https",
-    #       "ca-certificates",
-    #       "curl",
-    #       "software-properties-common",
-    #       "gnupg2"
-    #     ]
+    - name: Install required system packages
+      apt: name={{ item }} state=latest update_cache=yes
+      loop:
+        [
+          "apt-transport-https",
+          "ca-certificates",
+          "curl",
+          "software-properties-common",
+          "gnupg2",
+        ]
 
-    # - name: Add Docker GPG apt Key
-    #   apt_key:
-    #     url: https://download.docker.com/linux/debian/gpg
-    #     state: present
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
 
-    # - name: Add Docker Repository
-    #   apt_repository:
-    #     repo: deb [arch=amd64] https://download.docker.com/linux/debian stretch stable
-    #     state: present
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/debian stretch stable
+        state: present
 
-    # - name: Update apt and install docker-ce
-    #   apt: update_cache=yes name=docker-ce state=latest
+    - name: Update apt and install docker-ce
+      apt: update_cache=yes name=docker-ce state=latest
 
-    # - name: Add remote user to "docker" group
-    #   remote_user: "{{ USER }}"
-    #   user:
-    #     name: "{{ USER }}"
-    #     group: "docker"
-    #     append: yes
+    - name: Add remote user to "docker" group
+      remote_user: "{{ USER }}"
+      user:
+        name: "{{ USER }}"
+        group: "docker"
+        append: yes
 
     - name: Install docker-compose
       remote_user: "{{ USER }}"
@@ -46,8 +46,33 @@
         dest: /usr/local/bin/docker-compose
         mode: "+x"
 
-    - name: Copy and Execute the script
-      command: "sh {{PROJECT_HOME}}/app/run-docker.sh"
-      args:
-        chdir: "{{PROJECT_HOME}}/app"
-      become: false
+    ######################################################################
+    # - name: Copy and Execute the script
+    #   command: "sh {{PROJECT_HOME}}/app/run-docker.sh"
+    #   args:
+    #     chdir: "{{PROJECT_HOME}}/app"
+    #   become: false
+
+    # - name: Install docker and some dependencies
+    #   apt:
+    #     name: python3-pip
+    #     state: present
+
+    # - name: Install docker python module
+    #   pip:
+    #     name: docker
+
+    # - name: Install docker python module
+    #   pip:
+    #     name: docker-compose
+    ######################################################################
+
+    - name: Tear down existing services
+      community.docker.docker_compose:
+        project_src: /home/anscfg/app
+        state: absent
+
+    - name: run the service defined in my_project's docker-compose.yml
+      docker_compose:
+        project_src: /home/anscfg/app
+      register: output

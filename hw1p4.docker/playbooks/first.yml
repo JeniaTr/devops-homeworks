@@ -1,0 +1,3 @@
+- include: 02userAdd.yml
+- include: 03edit_iptables.yml
+- include: 04secure_ssh.yml
