@@ -21,7 +21,7 @@ There are several options for launching:
 
 To run the script, you need to run this command to get data for processing.
 
-- **curl -s https://yandex.ru/news/quotes/graph_2000.json > ./quotes.json**
+    curl -s https://yandex.ru/news/quotes/graph_2000.json > ./quotes.json
 
 Not included in the script, as access to Yandex is blocked in different countries.
 
@@ -42,7 +42,7 @@ Year and month values are specified in the assignment (starting from 2005 and re
  
 You need to install python. Here is the installation link:
 
-- **https://linuxize.com/post/how-to-install-python-3-8-on-ubuntu-18-04/**
+    https://linuxize.com/post/how-to-install-python-3-8-on-ubuntu-18-04/
 
 And before running the script, you need to install an additional module.
 
@@ -70,7 +70,7 @@ To check the availability and the first launch to create a user for ansible, the
 
 And the key to it:
 
-- ansible_ssh_private_key_file: /home/jenia/.ssh/admins_andersen.id_rsa
+- **ansible_ssh_private_key_file: /home/jenia/.ssh/admins_andersen.id_rsa**
 
 (The credentials for the initial login to the server may change depending on how the user configures the login.)
 
@@ -87,7 +87,7 @@ After that, you can start the rest of the playbooks:
 
 Add rules to iptables:
 
--__ansible-playbook playbooks/03edit_iptables.yml__
+- __ansible-playbook playbooks/03edit_iptables.yml__
 
 
 Will change the rules for entering the SSH:
@@ -101,18 +101,35 @@ Creates directories, loads the environment, creates services, brings up the web:
 
 After that, you can send requests to our site, and receive responses from it, as well as view some web pages:
 
-flask.jeniatr.space/myIp
+    flask.jeniatr.space/myIp
 
-flask.jeniatr.space/user/id (1-3)
+    flask.jeniatr.space/user/id (1-3)
 
-flask.jeniatr.space/404
+    flask.jeniatr.space/404
 
-flask.jeniatr.space/about
+    flask.jeniatr.space/about
 
 ----
+ ### Folder hw1p4.docker -- Ansible/Flask - Docker
+For this task you will need additional modules: 
 
-ansible-galaxy collection install community.docker
-ansible-galaxy collection install ansible.posix
+    Installing pip for Python 2
+    https://linuxize.com/post/how-to-install-pip-on-ubuntu-20.04/
+
+    and:
+
+    - __ansible-galaxy collection install community.docker__
+
+    and:
+
+    - __ansible-galaxy collection install ansible.posix__
+
+After that, under the user for initialization, we need to execute (from the project folder):
+- __ansible-playbook playbooks/first.yml__
+
+After that we need to change the user to "anscfg" and execute the second set of scripts to upload files to the server, docker and site settings. Then start the environment:
+- __ansible-playbook playbooks/secong.yml__
+
 
 
 ----
@@ -123,7 +140,7 @@ Change the token in the code to the one you will receive when registering the bo
 
 Put as arguments __$chat__ - chat id __$subject__ - topic  __$message__ - body of message
 
-- **./telegram.sh $chat $subject $message**
+    ./telegram.sh $chat $subject $message
 
 And the message will be sent to the selected chat
 

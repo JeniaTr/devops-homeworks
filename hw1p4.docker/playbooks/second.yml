@@ -1,0 +1,2 @@
+- include: 05moveAppFiles.yml
+- include: 06docker-install.yml
