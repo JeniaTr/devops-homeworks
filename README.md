@@ -130,8 +130,9 @@ After that, under the user for initialization, we need to execute (from the proj
 After that we need to change the user to "anscfg" and execute the second set of scripts to upload files to the server, docker and site settings. Then start the environment:
 - __ansible-playbook playbooks/secong.yml__
 
+After that, you can get to this site by specifying the path to it in your hosts file (its ypi address):
 
-
+        https://main.jeniatr.space/
 ----
 ## Telegram bot
 Change the token in the code to the one you will receive when registering the bot.
