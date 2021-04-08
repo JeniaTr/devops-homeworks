@@ -23,11 +23,6 @@ services:
       - ./primary/database.env
     volumes:
       - ./primary/data/:/var/lib/postgresql/data/
-      # ports:
-    #   - "${PGADMIN_PORT:-5050}:80"
-    #   - "5432:5432"
-    # networks:
-    #   - postgres
 
   db-standby:
     container_name: db-standby
@@ -39,20 +34,7 @@ services:
       - ./standby/database.env
     volumes:
       - ./standby/data/:/var/lib/postgresql/data/
-    # ports:
-    #   - "5432:5432"
-    # networks:
-    #   - postgres
-
-  pgbadger:
-    image: uphold/pgbadger
-    command: /var/lib/postgresql/data/pg_log/postgresql.log
-    volumes:
-      - ./cache/pgbadger:/data
-    volumes_from:
-      - db-primary:ro
 
 volumes:
     database-data:
     pgadmin:
-    # pgadmin-data:   
