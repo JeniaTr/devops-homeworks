@@ -23,7 +23,7 @@ services:
       - ./primary/database.env
     volumes:
       - ./primary/data/:/var/lib/postgresql/data/
-    # ports:
+      # ports:
     #   - "${PGADMIN_PORT:-5050}:80"
     #   - "5432:5432"
     # networks:
@@ -44,7 +44,15 @@ services:
     # networks:
     #   - postgres
 
+  pgbadger:
+    image: uphold/pgbadger
+    command: /var/lib/postgresql/data/pg_log/postgresql.log
+    volumes:
+      - ./cache/pgbadger:/data
+    volumes_from:
+      - db-primary:ro
+
 volumes:
     database-data:
     pgadmin:
-    # pgadmin-data:
+    # pgadmin-data:   
